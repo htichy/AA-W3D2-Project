@@ -49,17 +49,51 @@ class Reply
     @question_id = options["question_id"]
   end 
   
-  def author
-    
+  def author 
+    results = CON.execute(<<-SQL, @user_id)
+      SELECT 
+        *
+      FROM 
+        users
+      WHERE 
+        id = ?
+    SQL
+    User.new(results.first)
   end 
   
   def question 
+    results = CON.execute(<<-SQL, @question_id)
+      SELECT 
+        *
+      FROM 
+        questions
+      WHERE 
+        id = ?
+    SQL
+    Question.new(results.first)
   end 
   
   def parent_reply
+    results = CON.execute(<<-SQL, @parent_reply_id)
+      SELECT
+        *
+      FROM
+        replies
+      WHERE
+        id = ?
+    SQL
+    Reply.new(results.first)
   end 
   
-  def child_reply
-    #only find the children (one level deep) don't find grandchildren elements
+  def child_replies
+    results = CON.execute(<<-SQL, @id)
+      SELECT
+        *
+      FROM
+        replies
+      WHERE
+        parent_reply_id = ?
+    SQL
+    results.map { |result| Reply.new(result) }
   end 
 end 
