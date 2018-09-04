@@ -34,6 +34,8 @@ INSERT INTO
   questions(title, body, user_id)
 SELECT 
   'What is Love?', 'Baby Don''t Hurt Me, Don''t Hurt me, no more', users.id
+FROM 
+  users
 WHERE 
   fname = 'Austin' AND lname = 'Cotant';
   
@@ -41,6 +43,8 @@ INSERT INTO
   questions(title, body, user_id)
 SELECT 
   'Where?', 'HERE!', users.id
+FROM 
+  users
 WHERE 
   fname = 'Austin' AND lname = 'Cotant';
   
@@ -48,6 +52,8 @@ INSERT INTO
   questions(title, body, user_id)
 SELECT 
   'When?', 'NOW!', users.id
+FROM 
+  users
 WHERE 
   fname = 'Haven' AND lname = 'Tichy';
 
@@ -60,13 +66,16 @@ CREATE TABLE question_follows (
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (question_id) REFERENCES questions(id)
 );
--- 
--- INSERT INTO
---   question_follows (user_id, question_id)
--- VALUES
---   ((SELECT id FROM users WHERE fname = "Austin" AND lname = "Cotant"),
---   (SELECT id FROM questions WHERE title = "What is Love?")),
--- 
+
+INSERT INTO
+  question_follows (user_id, question_id)
+VALUES
+  ((SELECT id FROM users WHERE fname = 'Austin' AND lname = 'Cotant'),
+  (SELECT id FROM questions WHERE title = 'What is Love?')),
+  
+  ((SELECT id FROM users WHERE fname = 'Haven' AND lname = 'Tichy'),
+  (SELECT id FROM questions WHERE title = 'What is Love?'));
+
 
 
 CREATE TABLE replies (
@@ -122,6 +131,7 @@ VALUES
 
   ((SELECT id FROM users WHERE fname = "Kush" AND lname = "Patel"),
   (SELECT id FROM questions WHERE title = "Earl Question")
+  
 );
 
 INSERT INTO

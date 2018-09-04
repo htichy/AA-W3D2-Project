@@ -27,6 +27,11 @@ class Question
     SQL
     questions.map {|question| Question.new(question)}
   end 
+  
+  def self.all
+    results = CON.execute("SELECT * FROM questions")
+    results.map { |result| Question.new(result) }
+  end
     
   def initialize(options)
     @id = options["id"]
@@ -46,10 +51,14 @@ class Question
     SQL
     User.new(results.first)
   end 
-  
+    
   def replies
     Reply.find_by_question_id(@id)
-  end 
+  end
+  
+  def followers
+    QuestionFollow.followers_for_question_id(@id)
+  end  
   
   
 end 

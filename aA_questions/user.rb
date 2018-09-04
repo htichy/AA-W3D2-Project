@@ -16,6 +16,11 @@ class User
     User.new(user.first)
   end 
   
+  def self.all
+    results = CON.execute("SELECT * FROM users")
+    results.map { |result| User.new(result) }
+  end
+  
   def self.find_by_name(fname, lname)
     results = CON.execute(<<-SQL, fname, lname)
       SELECT
@@ -44,6 +49,9 @@ class User
     Reply.find_by_user_id(@id)
   end
   
+  def followed_questions 
+    QuestionFollow.followed_questions_for_user_id(@id)
+  end 
   
   
   def inspect 
