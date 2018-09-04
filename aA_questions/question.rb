@@ -32,7 +32,15 @@ class Question
     results = CON.execute("SELECT * FROM questions")
     results.map { |result| Question.new(result) }
   end
+
+  def self.most_followed(n)
+    QuestionFollow.most_followed_questions(n)
+  end 
     
+  def self.most_liked(n)
+    QuestionLike.most_liked_questions(n)
+  end
+        
   def initialize(options)
     @id = options["id"]
     @title = options["title"]
@@ -59,6 +67,16 @@ class Question
   def followers
     QuestionFollow.followers_for_question_id(@id)
   end  
+  
+  def likers 
+    QuestionLike.likers_for_question_id(@id)
+  end 
+  
+  def num_likes
+    QuestionLike.num_likes_for_question_id(@id)
+  end 
+  
+  
   
   
 end 
