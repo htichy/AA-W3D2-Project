@@ -14,6 +14,13 @@ CREATE TABLE users (
   lname TEXT NOT NULL
 );
 
+INSERT INTO
+users (fname, lname)
+VALUES
+('Austin', 'Cotant'),
+('Haven', 'Tichy'),
+('App', 'Academy');
+
 CREATE TABLE questions (
   id INTEGER PRIMARY KEY,
   title TEXT NOT NULL,
@@ -23,6 +30,28 @@ CREATE TABLE questions (
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+INSERT INTO 
+  questions(title, body, user_id)
+SELECT 
+  'What is Love?', 'Baby Don''t Hurt Me, Don''t Hurt me, no more', users.id
+WHERE 
+  fname = 'Austin' AND lname = 'Cotant';
+  
+INSERT INTO 
+  questions(title, body, user_id)
+SELECT 
+  'Where?', 'HERE!', users.id
+WHERE 
+  fname = 'Austin' AND lname = 'Cotant';
+  
+INSERT INTO 
+  questions(title, body, user_id)
+SELECT 
+  'When?', 'NOW!', users.id
+WHERE 
+  fname = 'Haven' AND lname = 'Tichy';
+
+
 CREATE TABLE question_follows (
   id INTEGER PRIMARY KEY,
   user_id INTEGER NOT NULL,
@@ -31,6 +60,14 @@ CREATE TABLE question_follows (
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (question_id) REFERENCES questions(id)
 );
+-- 
+-- INSERT INTO
+--   question_follows (user_id, question_id)
+-- VALUES
+--   ((SELECT id FROM users WHERE fname = "Austin" AND lname = "Cotant"),
+--   (SELECT id FROM questions WHERE title = "What is Love?")),
+-- 
+
 
 CREATE TABLE replies (
   id INTEGER PRIMARY KEY,
@@ -53,12 +90,6 @@ CREATE TABLE question_likes (
   FOREIGN KEY (question_id) REFERENCES questions(id)
 );
 
-INSERT INTO
-  users (fname, lname)
-VALUES
-  ('Austin', 'Cotant'),
-  ('Haven', 'Tichy'),
-  ('App', 'Academy');
   
 INSERT INTO
   users (fname, lname)
@@ -122,6 +153,7 @@ VALUES
 -- and here is the lazy way to add some seed data:
 INSERT INTO question_likes (user_id, question_id) VALUES (1, 1);
 INSERT INTO question_likes (user_id, question_id) VALUES (1, 2);
+
 
 
 
