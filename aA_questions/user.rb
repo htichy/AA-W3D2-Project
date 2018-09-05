@@ -57,7 +57,19 @@ class User
     QuestionLike.liked_questions_for_user_id(@id)
   end 
   
-  
+  def average_karma
+    result = CON.execute(<<-SQL, @id)
+      SELECT
+        CAST(COUNT(question_likes.id) AS FLOAT)/ COUNT(DISTINCT (question_id)) AS avg_likes_per_question
+      FROM
+        questions
+      LEFT OUTER JOIN
+        question_likes ON questions.id = question_id
+      WHERE 
+        questions.user_id = ?
+    SQL
+    result.first["avg_likes_per_question"]
+  end
   
   def inspect 
     "ID=#{@id} Name=#{@fname} #{@lname}"
