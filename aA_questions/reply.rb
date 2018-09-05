@@ -1,6 +1,7 @@
 require_relative 'questions_database'
 
 class Reply
+  attr_accessor :parent_reply_id, :body, :user_id, :question_id
   CON = QuestionsDatabase.instance
   
   def self.find_by_id(id)
@@ -47,6 +48,30 @@ class Reply
     @body = options["body"]
     @user_id = options["user_id"]
     @question_id = options["question_id"]
+  end 
+  
+  def create
+    raise "#{self} is already in the database" if @id
+    CON.execute(<<-SQL, @parent_reply_id, @body, @user_id, @question_id)
+      INSERT INTO 
+        replies(parent_reply_id, body, user_id, question_id)
+      VALUES 
+        (?, ?, ?, ?)
+    SQL
+    @id = CON.last_insert_row_id
+  end 
+  
+  def update
+    raise "#{self} is not in the database" unless @id
+    CON.execute(<<-SQL, @parent_reply_id, @body, @user_id, @question_id, @id)
+      UPDATE 
+        replies(parent_reply_id, body, user_id, question_id)
+      SET 
+        parent_reply_id = ?, body = ?, user_id = ?, question_id = ?
+      WHERE 
+        id = ?
+    SQL
+    self
   end 
   
   def author 

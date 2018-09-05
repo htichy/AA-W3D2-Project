@@ -1,6 +1,7 @@
 require_relative 'questions_database'
 
 class User 
+  attr_accessor :fname, :lname
   CON = QuestionsDatabase.instance
   
   def self.find_by_id(id)
@@ -40,6 +41,30 @@ class User
     @fname = options["fname"]
     @lname = options["lname"]
   end
+  
+  def create
+    raise "#{self} is already in the database" if @id
+    CON.execute(<<-SQL, @fname, @lname)
+      INSERT INTO 
+        users(fname, lname)
+      VALUES 
+        (?, ?)
+    SQL
+    @id = CON.last_insert_row_id
+  end 
+  
+  def update
+    raise "#{self} is not in the database" unless @id
+    CON.execute(<<-SQL, @fname, @lname, @id)
+      UPDATE 
+        users(fname, lname)
+      SET 
+        fname = ?, lname = ?
+      WHERE 
+        id = ?
+    SQL
+    self
+  end 
   
   def authored_questions
     Question.find_by_user_id(@id)
